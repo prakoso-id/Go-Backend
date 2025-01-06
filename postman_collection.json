@@ -1,0 +1,233 @@
+{
+    "info": {
+      "name": "Go-Backend API",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Auth",
+        "item": [
+          {
+            "name": "Login",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/api/auth/login",
+                "host": ["{{base_url}}"],
+                "path": ["api", "auth", "login"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": "{\n\t\"email\": \"user@example.com\",\n\t\"password\": \"yourpassword\"\n}"
+              }
+            }
+          },
+          {
+            "name": "Reset Password",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/api/auth/reset-password",
+                "host": ["{{base_url}}"],
+                "path": ["api", "auth", "reset-password"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": "{\n\t\"email\": \"user@example.com\"\n}"
+              }
+            }
+          },
+          {
+            "name": "Logout",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/api/auth/logout",
+                "host": ["{{base_url}}"],
+                "path": ["api", "auth", "logout"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Posts",
+        "item": [
+          {
+            "name": "List Posts",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "{{base_url}}/api/posts?offset=0&limit=10",
+                "host": ["{{base_url}}"],
+                "path": ["api", "posts"],
+                "query": [
+                  {
+                    "key": "offset",
+                    "value": "0"
+                  },
+                  {
+                    "key": "limit",
+                    "value": "10"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "name": "Get Post by ID",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "{{base_url}}/api/posts/:id",
+                "host": ["{{base_url}}"],
+                "path": ["api", "posts", ":id"],
+                "variable": [
+                  {
+                    "key": "id",
+                    "value": "1"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "name": "List Posts by User ID",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "{{base_url}}/api/posts/user/:user_id?offset=0&limit=10",
+                "host": ["{{base_url}}"],
+                "path": ["api", "posts", "user", ":user_id"],
+                "query": [
+                  {
+                    "key": "offset",
+                    "value": "0"
+                  },
+                  {
+                    "key": "limit",
+                    "value": "10"
+                  }
+                ],
+                "variable": [
+                  {
+                    "key": "user_id",
+                    "value": "1"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "name": "Create Post",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/api/posts",
+                "host": ["{{base_url}}"],
+                "path": ["api", "posts"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": "{\n\t\"title\": \"Post Title\",\n\t\"content\": \"Post content goes here\"\n}"
+              }
+            }
+          },
+          {
+            "name": "Update Post",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/api/posts/:id",
+                "host": ["{{base_url}}"],
+                "path": ["api", "posts", ":id"],
+                "variable": [
+                  {
+                    "key": "id",
+                    "value": "1"
+                  }
+                ]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": "{\n\t\"title\": \"Updated Post Title\",\n\t\"content\": \"Updated post content\"\n}"
+              }
+            }
+          },
+          {
+            "name": "Delete Post",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/api/posts/:id",
+                "host": ["{{base_url}}"],
+                "path": ["api", "posts", ":id"],
+                "variable": [
+                  {
+                    "key": "id",
+                    "value": "1"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "variable": [
+      {
+        "key": "base_url",
+        "value": "http://localhost:8080",
+        "type": "string"
+      },
+      {
+        "key": "token",
+        "value": "your_jwt_token_here",
+        "type": "string"
+      }
+    ]
+  }
