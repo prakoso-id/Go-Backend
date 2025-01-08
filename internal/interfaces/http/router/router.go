@@ -16,6 +16,21 @@ type Router struct {
 
 func NewRouter(db *gorm.DB) *Router {
 	engine := gin.Default()
+	
+	// Enable CORS
+	engine.Use(func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+		
+		c.Next()
+	})
+
 	return &Router{
 		Engine: engine,
 		db:     db,
