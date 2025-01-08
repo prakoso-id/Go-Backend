@@ -2,7 +2,8 @@ package service
 
 import (
 	"errors"
-	"go-backend/internal/modules/post/domain/entity"
+	imageEntity "go-backend/internal/modules/images/domain/entity"
+	postEntity "go-backend/internal/modules/post/domain/entity"
 	"go-backend/internal/modules/post/domain/repository"
 	"go-backend/internal/modules/post/dto"
 )
@@ -25,21 +26,40 @@ func NewPostService(repo repository.PostRepository) PostService {
 }
 
 func (s *postService) Create(userID uint, req *dto.CreatePostRequest) (*dto.CreatePostResponse, error) {
-	post := &entity.Post{
+	post := &postEntity.Post{
 		Title:   req.Title,
 		Content: req.Content,
 		UserID:  userID,
+	}
+
+	// Create images if provided
+	if len(req.ImageURLs) > 0 {
+		images := make([]imageEntity.Images, len(req.ImageURLs))
+		for i, url := range req.ImageURLs {
+			images[i] = imageEntity.Images{
+				URL:    url,
+				UserID: userID,
+			}
+		}
+		post.Images = images
 	}
 
 	if err := s.repo.Create(post); err != nil {
 		return nil, err
 	}
 
+	// Extract image URLs for response
+	imageURLs := make([]string, len(post.Images))
+	for i, img := range post.Images {
+		imageURLs[i] = img.URL
+	}
+
 	return &dto.CreatePostResponse{
-		ID:      post.ID,
-		Title:   post.Title,
-		Content: post.Content,
-		UserID:  post.UserID,
+		ID:        post.ID,
+		Title:     post.Title,
+		Content:   post.Content,
+		UserID:    post.UserID,
+		ImageURLs: imageURLs,
 	}, nil
 }
 
@@ -49,11 +69,18 @@ func (s *postService) GetByID(id uint) (*dto.GetPostResponse, error) {
 		return nil, err
 	}
 
+	// Extract image URLs for response
+	imageURLs := make([]string, len(post.Images))
+	for i, img := range post.Images {
+		imageURLs[i] = img.URL
+	}
+
 	resp := &dto.GetPostResponse{
-		ID:      post.ID,
-		Title:   post.Title,
-		Content: post.Content,
-		UserID:  post.UserID,
+		ID:        post.ID,
+		Title:     post.Title,
+		Content:   post.Content,
+		UserID:    post.UserID,
+		ImageURLs: imageURLs,
 		User: struct {
 			ID    uint   `json:"id"`
 			Name  string `json:"name"`
@@ -75,7 +102,7 @@ func (s *postService) Update(id, userID uint, req *dto.UpdatePostRequest) (*dto.
 	}
 
 	if post.UserID != userID {
-		return nil, errors.New("unauthorized: you can only update your own posts")
+		return nil, errors.New("unauthorized")
 	}
 
 	if req.Title != "" {
@@ -85,15 +112,34 @@ func (s *postService) Update(id, userID uint, req *dto.UpdatePostRequest) (*dto.
 		post.Content = req.Content
 	}
 
+	// Update images if provided
+	if len(req.ImageURLs) > 0 {
+		images := make([]imageEntity.Images, len(req.ImageURLs))
+		for i, url := range req.ImageURLs {
+			images[i] = imageEntity.Images{
+				URL:    url,
+				UserID: userID,
+			}
+		}
+		post.Images = images
+	}
+
 	if err := s.repo.Update(post); err != nil {
 		return nil, err
 	}
 
+	// Extract image URLs for response
+	imageURLs := make([]string, len(post.Images))
+	for i, img := range post.Images {
+		imageURLs[i] = img.URL
+	}
+
 	return &dto.UpdatePostResponse{
-		ID:      post.ID,
-		Title:   post.Title,
-		Content: post.Content,
-		UserID:  post.UserID,
+		ID:        post.ID,
+		Title:     post.Title,
+		Content:   post.Content,
+		UserID:    post.UserID,
+		ImageURLs: imageURLs,
 	}, nil
 }
 
@@ -104,7 +150,7 @@ func (s *postService) Delete(id, userID uint) error {
 	}
 
 	if post.UserID != userID {
-		return errors.New("unauthorized: you can only delete your own posts")
+		return errors.New("unauthorized")
 	}
 
 	return s.repo.Delete(id)
@@ -119,11 +165,18 @@ func (s *postService) List(page, pageSize int) ([]dto.GetPostResponse, error) {
 
 	response := make([]dto.GetPostResponse, len(posts))
 	for i, post := range posts {
+		// Extract image URLs for response
+		imageURLs := make([]string, len(post.Images))
+		for j, img := range post.Images {
+			imageURLs[j] = img.URL
+		}
+
 		response[i] = dto.GetPostResponse{
-			ID:      post.ID,
-			Title:   post.Title,
-			Content: post.Content,
-			UserID:  post.UserID,
+			ID:        post.ID,
+			Title:     post.Title,
+			Content:   post.Content,
+			UserID:    post.UserID,
+			ImageURLs: imageURLs,
 			User: struct {
 				ID    uint   `json:"id"`
 				Name  string `json:"name"`
@@ -148,11 +201,18 @@ func (s *postService) ListByUserID(userID uint, page, pageSize int) ([]dto.GetPo
 
 	response := make([]dto.GetPostResponse, len(posts))
 	for i, post := range posts {
+		// Extract image URLs for response
+		imageURLs := make([]string, len(post.Images))
+		for j, img := range post.Images {
+			imageURLs[j] = img.URL
+		}
+
 		response[i] = dto.GetPostResponse{
-			ID:      post.ID,
-			Title:   post.Title,
-			Content: post.Content,
-			UserID:  post.UserID,
+			ID:        post.ID,
+			Title:     post.Title,
+			Content:   post.Content,
+			UserID:    post.UserID,
+			ImageURLs: imageURLs,
 			User: struct {
 				ID    uint   `json:"id"`
 				Name  string `json:"name"`

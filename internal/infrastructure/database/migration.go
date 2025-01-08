@@ -1,7 +1,8 @@
 package database
 
 import (
-	"go-backend/internal/modules/post/domain/entity"
+	imageEntity "go-backend/internal/modules/images/domain/entity"
+	postEntity "go-backend/internal/modules/post/domain/entity"
 	userEntity "go-backend/internal/modules/user/domain/entity"
 	"gorm.io/gorm"
 )
@@ -9,6 +10,7 @@ import (
 func Migrate(db *gorm.DB) error {
 	return db.AutoMigrate(
 		&userEntity.User{},
-		&entity.Post{},
+		&postEntity.Post{},
+		&imageEntity.Images{},
 	)
 }
