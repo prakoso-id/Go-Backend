@@ -1,8 +1,14 @@
 package router
 
 import (
+	"go-backend/internal/modules/experience"
 	"go-backend/internal/modules/health"
 	"go-backend/internal/modules/post"
+	"go-backend/internal/modules/profile"
+	"go-backend/internal/modules/project"
+	"go-backend/internal/modules/public"
+	"go-backend/internal/modules/socialmedia"
+	"go-backend/internal/modules/tool"
 	"go-backend/internal/modules/user"
 
 	"github.com/gin-gonic/gin"
@@ -57,6 +63,30 @@ func (r *Router) SetupRoutes() {
 	// Post module
 	postModule := post.NewModule(r.db)
 	postModule.RegisterRoutes(api)
+
+	// Project module
+	projectModule := project.NewModule(r.db)
+	projectModule.RegisterRoutes(api)
+
+	// Tool module
+	toolModule := tool.NewModule(r.db)
+	toolModule.RegisterRoutes(api)
+
+	// Profile module
+	profileModule := profile.NewModule(r.db)
+	profileModule.RegisterRoutes(api)
+
+	// Social Media module
+	socialMediaModule := socialmedia.NewModule(r.db)
+	socialMediaModule.RegisterRoutes(api)
+
+	// Experience module
+	experienceModule := experience.NewModule(r.db)
+	experienceModule.RegisterRoutes(api)
+
+	// Public API module
+	publicModule := public.NewModule(r.db)
+	publicModule.RegisterRoutes(api)
 }
 
 func (r *Router) Run(addr string) error {
