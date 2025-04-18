@@ -33,10 +33,10 @@ COPY --from=builder /app/.env .
 # Set environment variables
 ENV TZ=Asia/Jakarta
 
-# # Create a non-root user and switch to it
-# RUN adduser -D appuser
-# RUN chown -R appuser:appuser /app
-# USER appuser
+# Create a non-root user and switch to it
+RUN adduser -D appuser
+RUN chown -R appuser:appuser /app
+USER appuser
 
 # Expose the application port
 EXPOSE 8080
